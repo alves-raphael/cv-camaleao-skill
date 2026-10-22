@@ -3,12 +3,14 @@
 
 Uso: render_cv.py cv.json out.pdf [--check-only]
 
-Só usa a stdlib; o PDF é gerado pelo Chrome/Chromium headless.
+Só usa a stdlib; o PDF é gerado pelo Chrome/Chromium/Edge headless (ou defina CHROME_BIN).
+Opcional: poppler (pdfinfo, pdffonts) para checar páginas e fontes.
 Schema: ver ../examples/cv.example.json.
 Imprime avisos objetivos (contagens, verbos proibidos, formato de data) e o número de páginas.
 """
 import html
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -162,11 +164,62 @@ def build_html(cv):
     return f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{esc(cv["name"])} — Resume</title><style>{CSS % {"page": cv.get("page", "A4")}}</style></head><body>{"".join(out)}</body></html>'
 
 
+CHROME_NAMES = ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "chrome", "msedge", "microsoft-edge")
+CHROME_PATHS = (
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+    r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+    r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+    r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+)
+SAFE_FONTS = ("arimo", "arial", "liberation", "helvetica", "tinos", "times", "calibri", "carlito")
+
+
 def chrome_bin():
-    for b in ("google-chrome", "chromium", "chromium-browser", "chrome"):
+    """CHROME_BIN > nomes no PATH > caminhos conhecidos (macOS/Windows)."""
+    env = os.environ.get("CHROME_BIN")
+    if env:
+        return env
+    for b in CHROME_NAMES:
         if shutil.which(b):
             return b
-    sys.exit("Chrome/Chromium não encontrado")
+    for path in CHROME_PATHS:
+        if Path(path).exists():
+            return path
+    sys.exit("Chrome/Chromium/Edge não encontrado. Instale um deles ou defina CHROME_BIN com o caminho do executável.")
+
+
+def print_pdf(chrome, html_text, out, workdir=None):
+    """Gera o PDF em um diretório temporário e copia para `out`."""
+    with tempfile.TemporaryDirectory(dir=workdir) as d:
+        page, tmp = Path(d) / "cv.html", Path(d) / "cv.pdf"
+        page.write_text(html_text, encoding="utf-8")
+        subprocess.run([chrome, "--headless=new", "--disable-gpu", "--no-sandbox", "--no-pdf-header-footer",
+                        f"--print-to-pdf={tmp}", page.as_uri()], capture_output=True)
+        if not tmp.exists() or tmp.stat().st_size == 0:
+            return False
+        shutil.copyfile(tmp, out)
+        return True
+
+
+def count_pages(pdf):
+    """pdfinfo se existir; senão conta objetos /Type /Page no arquivo."""
+    if shutil.which("pdfinfo"):
+        m = re.search(r"Pages:\s+(\d+)", subprocess.run(["pdfinfo", str(pdf)], capture_output=True, text=True).stdout)
+        if m:
+            return int(m.group(1))
+    n = len(re.findall(rb"/Type\s*/Page(?![s\w])", Path(pdf).read_bytes()))
+    return n or None
+
+
+def font_warnings(pdf):
+    if not shutil.which("pdffonts"):
+        return []
+    names = subprocess.run(["pdffonts", str(pdf)], capture_output=True, text=True).stdout.splitlines()[2:]
+    bad = sorted({l.split()[0].split("+")[-1] for l in names if l.strip() and not any(f in l.lower() for f in SAFE_FONTS)})
+    return [f"Fonte fora do padrão ATS no PDF: {', '.join(bad)} (instale Arial/Liberation Sans/Liberation Serif)"] if bad else []
 
 
 def main():
@@ -177,20 +230,25 @@ def main():
     cv = json.loads(Path(args[0]).read_text(encoding="utf-8"))
 
     warnings = check(cv)
+    out = None
+    if not check_only:
+        out = Path(args[1]).resolve()
+        out.parent.mkdir(parents=True, exist_ok=True)
+        chrome, html_text = chrome_bin(), build_html(cv)
+        # Chromium via snap nem sempre lê/grava em /tmp: tenta de novo ao lado do destino.
+        if not (print_pdf(chrome, html_text, out) or print_pdf(chrome, html_text, out, workdir=out.parent)):
+            sys.exit(f"Falha ao gerar o PDF com {chrome}. Rode com CHROME_BIN apontando para outro Chrome/Chromium.")
+        warnings += font_warnings(out)
+        pages = count_pages(out)
+        if pages and pages > 2:
+            warnings.append(f"{pages} páginas (máximo 2; corte conteúdo, não reduza a fonte)")
+
     print("AVISOS:" if warnings else "Sem avisos objetivos.")
     for w in warnings:
         print(" -", w)
-    if check_only:
-        return
-
-    out = Path(args[1]).resolve()
-    with tempfile.TemporaryDirectory() as d:
-        page = Path(d) / "cv.html"
-        page.write_text(build_html(cv), encoding="utf-8")
-        subprocess.run([chrome_bin(), "--headless=new", "--disable-gpu", "--no-sandbox", "--no-pdf-header-footer",
-                        f"--print-to-pdf={out}", page.as_uri()], check=True, capture_output=True)
-    pages = re.search(r"Pages:\s+(\d+)", subprocess.run(["pdfinfo", str(out)], capture_output=True, text=True).stdout)
-    print(f"PDF: {out} ({pages.group(1) if pages else '?'} páginas)")
+    if out:
+        pages = count_pages(out)
+        print(f"PDF: {out} ({pages if pages else 'nº de páginas não verificado'} páginas)")
 
 
 if __name__ == "__main__":

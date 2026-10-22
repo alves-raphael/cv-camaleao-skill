@@ -20,7 +20,7 @@ Aceite PDF, DOCX, Markdown ou texto colado (inclusive texto do LinkedIn). Opcion
 - Não faça perguntas antes de avaliar. Avalie com o que tem; pergunte apenas ao chegar na reescrita (ver §4).
 
 Extração de texto:
-- PDF: `pdftotext -layout cv.pdf -` e `pdfinfo cv.pdf` (páginas). **Abra o PDF com Read** para ver o layout (colunas, fotos, gráficos, ícones). Texto sozinho não revela multi-coluna nem barras de proficiência.
+- PDF: `pdftotext -layout cv.pdf -` e `pdfinfo cv.pdf` (páginas). Se o poppler não estiver instalado, use só o Read do PDF. **Abra o PDF com Read** para ver o layout (colunas, fotos, gráficos, ícones). Texto sozinho não revela multi-coluna nem barras de proficiência.
 - PDF sem texto extraível (só imagem) = bloqueante para ATS; avise.
 - DOCX: `soffice --headless --convert-to pdf` e siga como PDF.
 
