@@ -1,0 +1,75 @@
+{
+  "page": "A4",
+  "name": "Alex Silva",
+  "headline": "Senior Backend Engineer | TypeScript | AWS Cloud Architecture | Event-Driven Systems",
+  "contact": {
+    "phone": "+55 11 90000-0000",
+    "email": "alex.silva@example.com",
+    "location": "São Paulo, Brazil (GMT-3) · Remote-ready",
+    "links": [
+      {"label": "linkedin.com/in/alexsilva", "url": "https://linkedin.com/in/alexsilva"},
+      {"label": "github.com/alexsilva", "url": "https://github.com/alexsilva"}
+    ]
+  },
+  "summary": "Backend Engineer with 6+ years in distributed systems and cloud architecture, specialized in TypeScript, Node.js and AWS. Cut API response times by 65% for a platform serving 2M+ daily requests. Reduced deployment time by 40% by redesigning CI/CD pipelines with GitHub Actions. Seeking a Senior Backend Engineer role in global remote teams, solving scalability and reliability challenges.",
+  "achievements": [
+    {"title": "API performance", "text": "Enhanced API performance achieving 65% faster response times through query optimization and Redis caching, serving 2M+ daily requests."},
+    {"title": "Scheduling at scale", "text": "Built an event-driven scheduling system handling 100k+ events/day with AWS EventBridge and Lambda, reducing operational costs by $12K/year."},
+    {"title": "CI/CD speed", "text": "Optimized CI/CD pipelines reducing deployment time by 40% (25 to 15 min) via Docker layer caching and parallel tests."}
+  ],
+  "experience": [
+    {
+      "company": "Acme Delivery",
+      "role": "Backend Developer",
+      "location": "Remote, Brazil",
+      "period": "02/2024 - Present",
+      "context": "Largest virtual delivery support company in Brazil",
+      "bullets": [
+        "Developed Node.js microservices in TypeScript achieving 99.8% uptime for 500K+ daily active users.",
+        "Architected an event-driven scheduler on AWS EventBridge and Lambda, processing 100k+ daily events and cutting manual intervention by 85%.",
+        "Streamlined CI/CD with GitHub Actions and Docker caching, reducing deployment time from 25 to 15 minutes.",
+        "Implemented monitoring with Grafana and Sentry, reducing mean time to recovery by ~60%."
+      ]
+    },
+    {
+      "company": "Beta CX",
+      "role": "Backend Developer",
+      "location": "Remote, Brazil",
+      "period": "02/2023 - 02/2024",
+      "context": "One of Brazil's largest customer-experience platforms",
+      "bullets": [
+        "Resolved latency issues in the main API by optimizing a critical database query, reducing response time by 65%.",
+        "Modernized the backend with NestJS and TypeORM, enabling modular APIs shared across 4 product teams.",
+        "Shipped releases through CI/CD pipelines on GCP, achieving a 40% reduction in deployment time."
+      ]
+    },
+    {
+      "company": "Gamma Consulting",
+      "role": "Backend Developer",
+      "location": "Remote, Brazil",
+      "period": "06/2021 - 02/2023",
+      "context": "Brazilian IT consulting firm",
+      "bullets": [
+        "Led DevOps initiatives that optimized CI/CD pipelines with Jenkins and AWS CodePipeline, improving release stability for 5 client projects.",
+        "Engineered microservices with API Gateway, Lambda and SQS, delivering 3 PoCs that shortened client time-to-market.",
+        "Scaled infrastructure with CloudFormation and ECS/Fargate, cutting environment setup from days to under 1 hour."
+      ]
+    }
+  ],
+  "projects": [
+    {"name": "DBDev", "url": "https://pypi.org/project/dbdev/", "description": "Open-source CLI to create and manage SQL database containers with Docker; published on PyPI."},
+    {"name": "Pull Request Notifier", "url": "https://github.com/marketplace/actions/pull-request-notifier", "description": "Reusable GitHub Action sending PR notifications to Slack, Discord and Microsoft Teams, listed on GitHub Marketplace."}
+  ],
+  "skills": [
+    {"group": "Languages & Frameworks", "items": ["TypeScript", "JavaScript", "Python", "Node.js", "NestJS", "Express"]},
+    {"group": "Cloud & DevOps", "items": ["AWS (Lambda, ECS, EventBridge, SQS)", "GCP", "Docker", "Terraform", "GitHub Actions"]},
+    {"group": "Databases & Messaging", "items": ["PostgreSQL", "MongoDB", "DynamoDB", "Redis"]},
+    {"group": "Architecture & Testing", "items": ["Microservices", "Serverless", "Clean Architecture", "Jest"]},
+    {"group": "Observability", "items": ["Grafana", "Prometheus", "Sentry"]}
+  ],
+  "education": [
+    {"school": "Example University", "degree": "Bachelor's degree, Computer Science", "period": "12/2020 - 12/2025"}
+  ],
+  "certifications": [{"name": "AWS Certified Developer – Associate", "issuer": "AWS"}],
+  "languages": [{"name": "English", "level": "Professional"}, {"name": "Portuguese", "level": "Native"}]
+}
