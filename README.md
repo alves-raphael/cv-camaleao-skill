@@ -16,29 +16,20 @@ No Claude Code, peça por exemplo: "avalie meu CV com o método Camaleão" e inf
 
 ## Requisitos
 
-| Para | Precisa de | Obrigatório |
-|---|---|---|
-| Gerar o PDF | Python 3 + **Chrome, Chromium ou Edge** | sim |
-| Avaliar um PDF (extrair texto) | `pdftotext` (poppler) | não: sem ele, a skill usa a leitura de PDF do próprio Claude Code |
-| Conferir páginas e fontes do PDF gerado | `pdfinfo`, `pdffonts` (poppler) | não: sem eles, o script conta as páginas sozinho e não confere as fontes |
-| Fontes do layout | Arial / Times (macOS e Windows já têm); no Linux, `fonts-liberation` | recomendado: sem elas, o layout pode passar de 2 páginas |
+Só **Python 3**. Nada mais para instalar.
 
-Instalação do poppler: `apt install poppler-utils` · `brew install poppler` · Windows: via scoop/choco.
+- **Gerar o PDF:** `scripts/render_cv.py` usa apenas a biblioteca padrão. Escreve o PDF direto, com as fontes padrão do formato (Helvetica e Times), texto real, links clicáveis e o mesmo resultado em qualquer máquina. Não precisa de Chrome, de bibliotecas nem de fontes.
+- **Ler o PDF a avaliar:** o Read do Claude Code lê PDF nativamente. `pdftotext`/`pdfinfo` (poppler) são opcionais.
+- **Checar links:** usa `curl`, se existir. Sem ele, o item "links" fica como não verificado.
 
-O script procura o navegador em `CHROME_BIN`, no PATH e nos caminhos padrão do macOS e do Windows. Se o seu estiver em outro lugar:
+Limites conhecidos: o PDF gerado usa só caracteres do cp1252 (latim ocidental). Outros caracteres viram `?` e o script avisa. DOCX não é lido direto: exporte como PDF ou cole o texto.
 
-```bash
-CHROME_BIN="/caminho/do/chrome" python3 scripts/render_cv.py cv.json cv.pdf
-```
-
-Chromium via snap: o script já tenta de novo gravando ao lado do destino. Se ainda falhar, use outro navegador via `CHROME_BIN`.
-
-Testado apenas em Linux (Ubuntu, Chrome). macOS e Windows foram cobertos por caminho padrão, mas não testados.
+Testado em Linux (Python 3.12). O gerador não usa nada específico de sistema operacional, mas macOS e Windows não foram testados.
 
 ## Estrutura
 
 - `SKILL.md`: fluxo de avaliação e reescrita
 - `references/rubric.md`: checklist oficial de 10 itens e critérios por seção
 - `references/rewrite.md`: STAR-M, Power Verbs, extração de métricas, customização por vaga
-- `scripts/render_cv.py`: JSON → PDF (stdlib + Chrome headless)
+- `scripts/render_cv.py`: JSON → PDF (Python puro)
 - `examples/cv.example.json`: exemplo fictício do schema

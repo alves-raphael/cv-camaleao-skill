@@ -20,9 +20,9 @@ Aceite PDF, DOCX, Markdown ou texto colado (inclusive texto do LinkedIn). Opcion
 - Não faça perguntas antes de avaliar. Avalie com o que tem; pergunte apenas ao chegar na reescrita (ver §4).
 
 Extração de texto:
-- PDF: `pdftotext -layout cv.pdf -` e `pdfinfo cv.pdf` (páginas). Se o poppler não estiver instalado, use só o Read do PDF. **Abra o PDF com Read** para ver o layout (colunas, fotos, gráficos, ícones). Texto sozinho não revela multi-coluna nem barras de proficiência.
+- PDF: **use o Read do PDF** (nativo, sem instalar nada). Ele traz o texto e a imagem das páginas; só a imagem revela multi-coluna, foto, ícones e barras de proficiência, e dá o número de páginas. `pdftotext -layout` e `pdfinfo` (poppler) são opcionais: use só se já existirem na máquina.
 - PDF sem texto extraível (só imagem) = bloqueante para ATS; avise.
-- DOCX: `soffice --headless --convert-to pdf` e siga como PDF.
+- DOCX e outros formatos: peça para exportar como PDF (Word: Salvar como PDF) ou colar o texto. Se `soffice` existir, `soffice --headless --convert-to pdf` também serve.
 
 ## 2. Avaliação
 
@@ -80,7 +80,8 @@ Gere somente se o usuário pedir ou aceitar a oferta do relatório.
    ```
    - Trate cada AVISO impresso (corrija o JSON e rode de novo até limpar, ou justifique por que é aceitável).
    - Páginas: ≤ 2 (1 se ≤ 5 anos de experiência e couber sem forçar). Se passar, corte o menos relevante, não diminua a fonte (< 10pt reprova).
-   - Abra o PDF com Read e confira visualmente (coluna única, nada cortado). Rode `pdftotext -layout` e confirme que o texto sai em ordem de leitura.
+   - Abra o PDF com Read e confira visualmente (coluna única, nada cortado, ordem de leitura).
+   - O script usa só Python 3 (sem Chrome, bibliotecas ou fontes para instalar). Caracteres fora do cp1252 viram `?` e vêm como aviso.
 5. Opcional: se o usuário quiser outro formato (DOCX, Markdown), derive do mesmo JSON.
 
 ## 5. Entrega final
